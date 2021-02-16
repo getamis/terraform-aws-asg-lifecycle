@@ -48,6 +48,11 @@ variable "kubeconfig_s3_object" {
     type        = string
 }
 
+variable "kubernetes_node_role" {
+    description = "The kubernetes node role name, e.g. node-role.kubernetes.io/master"
+    type        = string
+}
+
 variable "lambda_handler" {
     description = "The lifecycle hooks lambda handler"
     type        = string

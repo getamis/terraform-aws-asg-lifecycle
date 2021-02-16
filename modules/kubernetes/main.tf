@@ -1,10 +1,11 @@
 locals {
   lambda_environment_variables = {
-    CLUSTER_NAME        = var.cluster_name
-    KUBE_CONFIG_BUCKET  = var.kubeconfig_s3_bucket
-    KUBE_CONFIG_OBJECT  = var.kubeconfig_s3_object
-    LAUNCHING_TIMEOUT   = var.heartbeat_timeout["launching"]
-    TERMINATING_TIMEOUT = var.heartbeat_timeout["terminating"]
+    CLUSTER_NAME         = var.cluster_name
+    KUBE_CONFIG_BUCKET   = var.kubeconfig_s3_bucket
+    KUBE_CONFIG_OBJECT   = var.kubeconfig_s3_object
+    KUBERNETES_NODE_ROLE = var.kubernetes_node_role 
+    LAUNCHING_TIMEOUT    = var.heartbeat_timeout["launching"]
+    TERMINATING_TIMEOUT  = var.heartbeat_timeout["terminating"]
   }
 }
 
@@ -55,9 +56,20 @@ data "aws_iam_policy_document" "k8s_lifecycle" {
     actions = [
       "autoscaling:DescribeTags",
       "autoscaling:DescribeAutoScalingGroups",
+      "autoscaling:DescribeLoadBalancers",
       "autoscaling:CompleteLifecycleAction",
       "ec2:DescribeInstances",
       "ec2:CreateTags"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+  statement {
+    sid = "ELB"
+    actions = [
+      "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeInstanceHealth"
     ]
     resources = [
       "*"
