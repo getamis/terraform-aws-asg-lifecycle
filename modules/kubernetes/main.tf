@@ -33,10 +33,12 @@ resource "aws_security_group" "k8s_lifecycle" {
   name_prefix = "${var.name}-lifecycle-"
   vpc_id      = data.aws_subnet.k8s_lifecycle.vpc_id
 
-  tags = merge(var.extra_tags, map(
-    "Name", "${var.name}-lifecycle",
-    "kubernetes.io/cluster/${var.cluster_name}", "owned"
-  ))
+  tags = merge(var.extra_tags, 
+    {
+      Name                                        = "${var.name}-lifecycle"
+      "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    }
+  )
 }
 
 resource "aws_security_group_rule" "k8s_lifecycle_egress" {
