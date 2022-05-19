@@ -37,6 +37,7 @@ def hook_init(hook_payload):
     hook_info['asg_name'] = hook_payload['AutoScalingGroupName']
     hook_info['transition'] = hook_payload['LifecycleTransition']
     hook_info['instance_id'] = hook_payload['EC2InstanceId']
+    hook_info['destination'] = hook_payload['Destination']
 
     instance = ec2.describe_instances(InstanceIds=[hook_info['instance_id']])['Reservations'][0]['Instances'][0]
 
@@ -66,8 +67,27 @@ def launch_node(k8s_api, hook_info):
         continue_lifecycle_action(asg, hook_info['asg_name'], hook_info['name'], hook_info['instance_id'])
 
     else:
+        if hook_info['destination'] == 'WarmPool':
+            cordon_timeout = time.time() + hook_info['launching_timeout']
+            loop = True
+            while loop:
+                try:
+                    cordon_node(k8s_api, hook_info['node_name'])
+                    loop = False
+                except:
+                    logger.warning('Attempting to cordon node {} failed, retrying ...'.format(hook_info['node_name']))
+                    pass
+                if time.time() < cordon_timeout:
+                    time.sleep(1)
+                else:
+                    logger.exception('Exceeded the timeout of node {} cordoning, abandoning ...'.format(hook_info['node_name']))
+                    abandon_lifecycle_action(asg, hook_info['asg_name'], hook_info['name'], hook_info['instance_id'])
+
+            logger.info('Succeed in cordoning node {} in the warm pool.'.format(hook_info['node_name']))
+
         if node_ready(k8s_api, hook_info['node_name'], hook_info['launching_timeout']):
             append_node_labels(k8s_api, hook_info['node_name'], hook_info['node_role'], hook_info['instance_lifecycle'])
+            logger.info('Success to append labels to node {}.'.format(hook_info['node_name']))
             continue_lifecycle_action(asg, hook_info['asg_name'], hook_info['name'], hook_info['instance_id'])
         else:
             abandon_lifecycle_action(asg, hook_info['asg_name'], hook_info['name'], hook_info['instance_id'])     
