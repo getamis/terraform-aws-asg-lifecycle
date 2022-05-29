@@ -1,0 +1,11 @@
+*.tfvars
+*.tfstate*
+.terraform.lock.hcl
+.terraform/
+.terratest/
+vendor/
+.test-data
+.DS_Store
+.vscode
+examples/aws-iam/iam-provision/deploy
+output/

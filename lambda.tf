@@ -5,14 +5,14 @@ resource "aws_sns_topic" "lifecycle" {
 }
 
 resource "aws_sns_topic_subscription" "lifecycle" {
-  topic_arn  = aws_sns_topic.lifecycle.arn
-  protocol   = "lambda"
-  endpoint   = module.lambda.this_lambda_function_arn
+  topic_arn = aws_sns_topic.lifecycle.arn
+  protocol  = "lambda"
+  endpoint  = module.lambda.lambda_function_arn
 }
 
 module "lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "1.28.0"
+  version = "3.2.1"
 
   function_name = "${var.name}-lifecycle"
 
@@ -34,7 +34,7 @@ module "lambda" {
   role_permissions_boundary = var.iam_role_boundary_policy_arn
   role_tags                 = var.iam_role_tags
 
-  attach_network_policy     = var.lambda_function_vpc_subnet_ids != null
+  attach_network_policy = var.lambda_function_vpc_subnet_ids != null
 
   allowed_triggers = {
     AllowExecutionFromSNS = {
@@ -50,4 +50,21 @@ module "lambda" {
   vpc_security_group_ids = var.lambda_function_vpc_security_group_ids
 
   tags = var.extra_tags
+}
+
+data "aws_region" "current" {}
+
+resource "null_resource" "assign_default_sg" {
+  # workaround for sg still attached to eni created by lambda function
+  # https://github.com/hashicorp/terraform-provider-aws/issues/10329
+  triggers = {
+    aws_region       = data.aws_region.current.name
+    lambda_subnet_id = var.lambda_function_vpc_subnet_ids != null ? var.lambda_function_vpc_subnet_ids[0] : ""
+    lambda_sg_id     = var.lambda_function_vpc_security_group_ids != null ? var.lambda_function_vpc_security_group_ids[0] : ""
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "/bin/bash ${path.module}/scripts/update-lambda-eni.sh ${self.triggers.aws_region} ${self.triggers.lambda_subnet_id} ${self.triggers.lambda_sg_id}"
+  }
 }

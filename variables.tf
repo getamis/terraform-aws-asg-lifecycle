@@ -11,7 +11,7 @@ variable "autoscaling_group_name" {
 
 variable "default_result" {
   description = "(optional) describe your variable"
-  type        = object({
+  type = object({
     launching   = string
     terminating = string
   })
@@ -19,19 +19,19 @@ variable "default_result" {
 
 variable "heartbeat_timeout" {
   description = "lifecycle hook timeout in second"
-  type        = object({
+  type = object({
     launching   = number
-    terminating = number 
+    terminating = number
   })
 }
 
 variable "notification_metadata" {
   description = "The additional information send from asg"
-  type        = object({
+  type = object({
     launching   = string
     terminating = string
   })
-  default     = {
+  default = {
     launching   = ""
     terminating = ""
   }
