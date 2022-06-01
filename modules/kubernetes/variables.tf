@@ -10,11 +10,11 @@ variable "cluster_name" {
 
 variable "default_result" {
   description = "(optional) describe your variable"
-  type        = object({
+  type = object({
     launching   = string
     terminating = string
   })
-  default     = {
+  default = {
     launching   = "CONTINUE"
     terminating = "CONTINUE"
   }
@@ -28,47 +28,47 @@ variable "extra_tags" {
 
 variable "heartbeat_timeout" {
   description = "lifecycle hook timeout in second"
-  type        = object({
+  type = object({
     launching   = number
-    terminating = number 
+    terminating = number
   })
-  default    = {
+  default = {
     launching   = 550
     terminating = 850
-  } 
+  }
 }
 
 variable "kubeconfig_s3_bucket" {
-    description = "The kubeconfig s3 bucket name"
-    type        = string
+  description = "The kubeconfig s3 bucket name"
+  type        = string
 }
 
 variable "kubeconfig_s3_object" {
-    description = "The kubeconfig s3 object name"
-    type        = string
+  description = "The kubeconfig s3 object name"
+  type        = string
 }
 
 variable "kubernetes_node_role" {
-    description = "The kubernetes node role name, e.g. node-role.kubernetes.io/master"
-    type        = string
+  description = "The kubernetes node role name, e.g. node-role.kubernetes.io/master"
+  type        = string
 }
 
 variable "lambda_handler" {
-    description = "The lifecycle hooks lambda handler"
-    type        = string
-    default     = "handler.lambda_handler"
+  description = "The lifecycle hooks lambda handler"
+  type        = string
+  default     = "handler.lambda_handler"
 }
 
 variable "lambda_function_vpc_subnet_ids" {
-    description = "The Lambda vpc subnet ids"
-    type        = list(string)
-    default     = []
+  description = "The Lambda vpc subnet ids"
+  type        = list(string)
+  default     = []
 }
 
 variable "lambda_runtime" {
-    description = "The lifecycle hooks runtime"
-    type        = string
-    default     = "python3.7"
+  description = "The lifecycle hooks runtime"
+  type        = string
+  default     = "python3.9"
 }
 
 variable "name" {

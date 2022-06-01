@@ -1,0 +1,29 @@
+name: "Terraform test" 
+on: [push, pull_request]
+
+jobs:
+  tflint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: TFLint
+        uses: docker://wata727/tflint
+
+  fmt-and-validate:
+    name: fmt and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install terraform
+        env:
+          TF_VERSION: 0.13.7
+        run: |
+          # Install terraform
+          wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip -O /tmp/terraform.zip
+          yes "y" | sudo unzip -d /usr/local/bin/ /tmp/terraform.zip
+      - name: Format Code
+        run: make fmt
+      - name: Validate Code
+        run: make validate
+        
