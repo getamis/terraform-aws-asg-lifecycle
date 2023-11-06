@@ -49,12 +49,6 @@ variable "kms_key_arn" {
   default     = ""
 }
 
-variable "cloudwatch_log_group_kms_key_id" {
-  description = "The ARN of the KMS Key to use when encrypting log data for Lambda"
-  type        = string
-  default     = null
-}
-
 variable "reserved_concurrent_executions" {
   description = "The amount of reserved concurrent executions for this lambda function. A value of 0 disables lambda from being triggered and -1 removes any concurrency limitations"
   type        = number
@@ -128,12 +122,6 @@ variable "lambda_function_vpc_security_group_ids" {
   description = "List of security group ids when Lambda Function should run in the VPC."
   type        = list(string)
   default     = null
-}
-
-variable "cloudwatch_log_group_retention_in_days" {
-  description = "Specifies the number of days you want to retain log events in log group for Lambda."
-  type        = number
-  default     = 90
 }
 
 variable "extra_tags" {
