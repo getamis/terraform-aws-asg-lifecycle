@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.13.1"
+  required_version = ">= 1.5.0"
 }
 
 module "k8s_lifecycle_hook" {
