@@ -17,5 +17,4 @@ module "k8s_lifecycle_hook" {
     "Name"                              = "test-master"
     "kubernetes.io/cluster/test-master" = "owned"
   }
-
 }
