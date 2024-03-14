@@ -9,7 +9,7 @@ from kubernetes import client as k8s_client
 from kubernetes import config as k8s_config
 from kubernetes.client.rest import ApiException
 
-from k8s_utils import (abandon_lifecycle_action, continue_lifecycle_action, cordon_node, node_exists, node_ready, append_node_labels, master_ready, remove_all_pods)
+from k8s_utils import (abandon_lifecycle_action, continue_lifecycle_action, cordon_node, node_exists, node_ready, append_node_labels, master_ready, remove_all_pods, exclude_node_from_loadbalancer)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -106,6 +106,7 @@ def terminate_node(k8s_api, hook_info):
             return
 
         cordon_node(k8s_api, hook_info['node_name'])
+        exclude_node_from_loadbalancer(k8s_api, hook_info['node_name'])
         remove_all_pods(k8s_api, hook_info['node_name'])
 
         continue_lifecycle_action(asg, hook_info['asg_name'], hook_info['name'], hook_info['instance_id'])

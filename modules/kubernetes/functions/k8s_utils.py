@@ -233,3 +233,19 @@ def continue_lifecycle_action(asg_client, auto_scaling_group_name, lifecycle_hoo
                                          AutoScalingGroupName=auto_scaling_group_name,
                                          LifecycleActionResult='CONTINUE',
                                          InstanceId=instance_id)
+
+def exclude_node_from_loadbalancer(api, node_name):
+    """Excludes the node from external load balancers, such as AWS load balancer target groups.
+    """
+    patch_body = {
+        "metadata": {
+            "labels": {
+                "node.kubernetes.io/exclude-from-external-load-balancers": "asg-lifecycle-hook"
+            }
+        }
+    }
+
+    try:
+        api.patch_node(node_name, patch_body)
+    except:
+        logger.exception('There was an error appending exclude from loadbalancer label to the node {} '.format(node_name))
