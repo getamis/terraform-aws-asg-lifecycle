@@ -249,6 +249,8 @@ def node_ready(api, node_name, timeout):
             # The node is still not been registered to K8s
             if not node_exists(api, node_name):
                 time.sleep(10)
+                logger.info(
+                    'Node {} is not registered to K8s, waiting for it to be registered'.format(node_name))
                 continue
 
             node = api.list_node(
@@ -258,6 +260,8 @@ def node_ready(api, node_name, timeout):
                 if condition.type == 'Ready' and condition.status == 'True':
                     return True
 
+            logger.info(
+                'Node {} is not ready, waiting for it to be ready'.format(node_name))
             time.sleep(10)
         except:
             logger.exception(
@@ -270,10 +274,19 @@ def node_exists(api, node_name):
 
     try:
         nodes = api.list_node(pretty=True).items
+        logger.info(
+            'Checking if node {} exists in the cluster, found {} nodes'.format(node_name, len(nodes)))
         node = next((n for n in nodes if n.metadata.name == node_name), None)
 
-        return False if not node else True
+        if node:
+            logger.info('Node {} exists in the cluster'.format(node_name))
+            return True
+        else:
+            logger.info('Node {} does not exist in the cluster'.format(node_name))
+            return False
     except:
+        logger.exception(
+            'There was an error checking if the node {} exists in the cluster'.format(node_name))
         return False
 
 
