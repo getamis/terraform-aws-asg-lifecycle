@@ -9,3 +9,8 @@ vendor/
 .vscode
 examples/aws-iam/iam-provision/deploy
 output/
+
+# python
+__pycache__/
+*.pyc
+.venv/
