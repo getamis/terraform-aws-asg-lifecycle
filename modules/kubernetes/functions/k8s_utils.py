@@ -305,6 +305,8 @@ def append_node_labels(api, node_name, node_role, instance_lifecycle):
 
     try:
         api.patch_node(node_name, patch_body)
+        logger.info(
+            'Node {} has been labeled with role={}'.format(node_name, node_role))
     except:
         logger.exception(
             'There was an error appending labels to the node {} '.format(node_name))
