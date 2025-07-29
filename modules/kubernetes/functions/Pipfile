@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+boto3 = "==1.39.14"
+botocore = "==1.39.14"
+chardet = "==5.2.0"
+kubernetes = "==33.1.0"
+pyyaml = "==6.0.2"
+aws-lambda-typing = "==2.20.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.13"

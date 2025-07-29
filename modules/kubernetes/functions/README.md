@@ -1,22 +1,22 @@
 ### Test lambda function with a simple test
+---
 
-Requirements
-- python=3.9.x
-
-Setup
+Pipenv install run-time dependencies and testing dependencies
 
 ```
-python3.9 -m venv .venv
-source .venv/bin/activate
-python --version
-Python 3.9.22
+pipenv install
 ```
 
-Install run-time dependencies and testing dependencies
+### Update pip
 
 ```
-pip install -r requirements.txt
-pip install aws_lambda_typing
+pipenv update
+```
+
+Generate requirements.txt
+
+```
+pipenv requirements > requirements.txt
 ```
 
 ### Run the test
@@ -43,7 +43,7 @@ data = {'Records': [{...}]}
 Run the test (with local aws credentials)
 
 ```
-python test.py
+pipenv run python test.py
 ```
 
 ### Clean up
