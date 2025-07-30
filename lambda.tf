@@ -11,8 +11,9 @@ resource "aws_sns_topic_subscription" "lifecycle" {
 }
 
 module "lambda" {
-  source  = "terraform-aws-modules/lambda/aws"
-  version = "3.2.1"
+  #source  = "terraform-aws-modules/lambda/aws"
+  #version = "8.0.1"
+  source = "git::https://github.com/getamis/terraform-aws-lambda.git?ref=disable-asg-lifecycle"
 
   function_name = "${var.name}-lifecycle"
 
