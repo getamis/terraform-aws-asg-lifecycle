@@ -68,7 +68,7 @@ variable "lambda_function_vpc_subnet_ids" {
 variable "lambda_runtime" {
   description = "The lifecycle hooks runtime"
   type        = string
-  default     = "python3.9"
+  default     = "python3.13"
 }
 
 variable "name" {

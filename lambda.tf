@@ -11,8 +11,7 @@ resource "aws_sns_topic_subscription" "lifecycle" {
 }
 
 module "lambda" {
-  source  = "terraform-aws-modules/lambda/aws"
-  version = "3.2.1"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v8.0.1"
 
   function_name = "${var.name}-lifecycle"
 
@@ -58,7 +57,7 @@ resource "null_resource" "assign_default_sg" {
   # workaround for sg still attached to eni created by lambda function
   # https://github.com/hashicorp/terraform-provider-aws/issues/10329
   triggers = {
-    aws_region       = data.aws_region.current.name
+    aws_region       = data.aws_region.current.region
     lambda_subnet_id = var.lambda_function_vpc_subnet_ids != null ? var.lambda_function_vpc_subnet_ids[0] : ""
     lambda_sg_id     = var.lambda_function_vpc_security_group_ids != null ? var.lambda_function_vpc_security_group_ids[0] : ""
   }
