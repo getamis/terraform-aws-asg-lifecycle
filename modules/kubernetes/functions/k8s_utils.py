@@ -269,7 +269,7 @@ def node_ready(api, node_name, timeout):
             time.sleep(10)
         except Exception as e:
             logger.exception(
-                'There was an error waiting for node {} ready: {}'.format(node_name, e))
+                'There was an error waiting for node {} ready'.format(node_name))
             return False
 
 
@@ -281,7 +281,7 @@ def node_exists(api, node_name):
         field_selector = 'metadata.name=' + node_name
         nodes = api.list_node(
             pretty=True, field_selector=field_selector, _request_timeout=10).items
-        
+
         if nodes:
             logger.info('Node {} exists in the cluster'.format(node_name))
             return True
@@ -290,7 +290,7 @@ def node_exists(api, node_name):
             return False
     except Exception as e:
         logger.exception(
-            'There was an error checking if node {} exists in the cluster: {}'.format(node_name, e))
+            'There was an error checking if node {} exists in the cluster'.format(node_name))
         return False
 
 
