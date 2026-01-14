@@ -246,16 +246,20 @@ def node_ready(api, node_name, timeout):
             return False
 
         try:
-            # The node is still not been registered to K8s
-            if not node_exists(api, node_name):
-                time.sleep(10)
+            nodes = api.list_node(
+                pretty=True, field_selector=field_selector, _request_timeout=15).items
+
+            if not nodes:
+                # Node doesn't exist yet - equivalent to node_exists() returning False
                 logger.info(
                     'Node {} is not registered to K8s, waiting for it to be registered'.format(node_name))
+                time.sleep(10)
                 continue
 
-            node = api.list_node(
-                pretty=True, field_selector=field_selector).items[0]
+            # Node exists - get the first (and only) result
+            node = nodes[0]
 
+            # Check if node is ready
             for condition in node.status.conditions:
                 if condition.type == 'Ready' and condition.status == 'True':
                     return True
@@ -263,9 +267,9 @@ def node_ready(api, node_name, timeout):
             logger.info(
                 'Node {} is not ready, waiting for it to be ready'.format(node_name))
             time.sleep(10)
-        except:
+        except Exception as e:
             logger.exception(
-                'There was an error waiting the node {} ready'.format(node_name))
+                'There was an error waiting for node {} ready'.format(node_name))
             return False
 
 
@@ -273,20 +277,20 @@ def node_exists(api, node_name):
     """Determines whether the specified node is still part of the cluster."""
 
     try:
-        nodes = api.list_node(pretty=True).items
-        logger.info(
-            'Checking if node {} exists in the cluster, found {} nodes'.format(node_name, len(nodes)))
-        node = next((n for n in nodes if n.metadata.name == node_name), None)
+        # Use field_selector instead of listing all nodes
+        field_selector = 'metadata.name=' + node_name
+        nodes = api.list_node(
+            pretty=True, field_selector=field_selector, _request_timeout=10).items
 
-        if node:
+        if nodes:
             logger.info('Node {} exists in the cluster'.format(node_name))
             return True
         else:
             logger.info('Node {} does not exist in the cluster'.format(node_name))
             return False
-    except:
+    except Exception as e:
         logger.exception(
-            'There was an error checking if the node {} exists in the cluster'.format(node_name))
+            'There was an error checking if node {} exists in the cluster'.format(node_name))
         return False
 
 
