@@ -3,7 +3,7 @@ aws-lambda-typing==2.20.0; python_version >= '3.6' and python_version < '4.0'
 boto3==1.39.14; python_version >= '3.9'
 botocore==1.39.14; python_version >= '3.9'
 cachetools==5.5.2; python_version >= '3.7'
-certifi==2025.7.14; python_version >= '3.7'
+certifi==2026.10.18; python_version >= '3.7'
 chardet==5.2.0; python_version >= '3.7'
 charset-normalizer==3.4.2; python_version >= '3.7'
 durationpy==0.10
